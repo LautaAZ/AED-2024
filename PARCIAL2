@@ -1,0 +1,97 @@
+def es_consonante(car):
+    if "a" <= car <= "z" or "A" <= car <= "Z":
+        return True
+    else:
+        return False
+
+
+def es_digito(car):
+    if car in "0123456789":
+        return True
+    else:
+        return False
+
+def es_vocal(car):
+    if car in "aeiouAEIOU":
+        return True
+    else:
+        return False
+
+
+def promedio(cantidad, total):
+    if total != 0:
+        return cantidad / total
+    else:
+        return 0
+
+
+def principal():
+    # texto = "h4ol h4ol h4ola h4ol h4ol."
+
+    m = open('entrada.txt', 'r')
+    texto = m.read()
+    m.close()
+
+    r1 = r2 = r3 = r4 = 0
+    cant_car = cant_cons = cant_vocal = cant_s = 0
+    tiene_digito = tiene_p = tiene_ra = False
+    suma = cantidad = 0
+    tiene_vocal_primera = tiene_vocal_segunda = False
+    anterior = ""
+    for car in texto:
+        #fuera
+        if car == " " or car == ".":
+            #longitud par y formadas por vocales y consonantes en partes iguales
+            if (cant_car % 2 == 0) and (cant_vocal == cant_cons):
+                r1 += 1
+            #pal mas larga entre que tiene al menos un digito y no tiene pP
+            if tiene_digito and not (tiene_p == 1) and (cant_car >= r2):
+                r2 = cant_car
+            #mas de 2 caracteres e incluyen una o mas veces S
+            if cant_car >= 2 and (cant_s >= 1):
+                suma += cant_car
+                cantidad += 1
+            #CANTIDAD CON RA Y TENGA UNA VOCAL EN 2 PRIMEROS CARACTERES
+            if tiene_ra and (tiene_vocal_primera or tiene_vocal_segunda):
+                r4 += 1
+                
+            cant_car = 0
+            cant_vocal = cant_cons = 0
+            tiene_digito = tiene_ra = False
+            tiene_vocal_primera = tiene_vocal_segunda = False
+            tiene_p = False
+            cant_s = 0
+        #dentro
+        else:
+            cant_car += 1
+            #1
+            if es_consonante(car) and not es_vocal(car):
+                cant_cons += 1
+            if es_vocal(car):
+                cant_vocal += 1
+            #2
+            if es_digito(car):
+                tiene_digito = True
+            if car in "P" or car in "p":
+                tiene_p += 1
+            #3
+            if car in "s" or car in "S":
+                cant_s += 1
+            #4
+            if anterior in "Rr" and car in "Aa":
+                tiene_ra = True
+            if cant_car == 1 and es_vocal(car):
+                tiene_vocal_primera = True
+            if cant_car == 2 and es_vocal(car):
+                tiene_vocal_segunda = True
+        anterior = car
+
+    r3 = round(promedio(suma, cantidad))
+    print("Primer resultado:", r1)
+    print("Segundo resultado:", r2)
+    print("Tercer resultado:", r3)
+    print("Cuarto resultado:", r4)
+
+
+if __name__ == '__main__':
+    principal()
